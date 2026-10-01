@@ -231,6 +231,17 @@ Manual two-application/two-user check:
 5. Disconnect one user; verify the other three remain connected.
 6. Gracefully restart Node; verify saved accounts restore and status becomes connected after readiness, without falsely reporting connected during initialization.
 
+## Upgrading from v1.0.0
+
+v1.0.1 fixes Composer package discovery when Collision decorates Laravel's exception handler. If installation stopped with a handler TypeError, run:
+
+```bash
+composer update devclick/whatsapp-laravel --with-dependencies
+php artisan package:discover --ansi
+```
+
+No application code or configuration changes are needed for this patch. The provider accepts the framework exception-handler contract, including Collision's wrapper, instead of requiring the concrete Laravel handler.
+
 ## Development
 
 ```bash

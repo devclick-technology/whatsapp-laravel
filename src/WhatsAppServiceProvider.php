@@ -7,7 +7,6 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -25,7 +24,10 @@ class WhatsAppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->callAfterResolving(ExceptionHandler::class, function (Handler $handler): void {
+        $this->callAfterResolving(ExceptionHandler::class, function (ExceptionHandler $handler): void {
+            if (! is_callable([$handler, 'renderable'])) {
+                return;
+            }
             $handler->renderable(function (\Throwable $exception, Request $request): ?JsonResponse {
                 if (! in_array(NoStore::class, $request->route()?->gatherMiddleware() ?? [], true)) {
                     return null;
